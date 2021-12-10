@@ -1,50 +1,55 @@
-const { DataTypes, Model } = require('sequelize');
-const Center = require('./center');
-const sequelize = require('../db/connection');
+const { Model } = require("sequelize");
 
-class User extends Model { }
-User.init({
-    id: {
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    static associate(models) {}
+  }
+  User.init(
+    {
+      id: {
         type: DataTypes.STRING,
         allowNull: false,
-        primaryKey: true
-    },
-    name: {
+        primaryKey: true,
+      },
+      name: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastName: {
+        allowNull: false,
+      },
+      lastName: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    email: {
+        allowNull: false,
+      },
+      email: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    password: {
+        allowNull: false,
+      },
+      password: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    centerId: {
+        allowNull: false,
+      },
+      centerId: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    active: {
+        allowNull: false,
+        references: {
+          model: "Center",
+          key: "id",
+        },
+      },
+      active: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true
-    },
-    office: {
+        defaultValue: true,
+      },
+      office: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        allowNull: false
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: "User",
+      timestamps: false,
     }
-
-}, {
-    sequelize,
-    modelName: 'User',
-    timestamps: false
-}
-)
-
-
-module.exports = User;
+  );
+  return User;
+};

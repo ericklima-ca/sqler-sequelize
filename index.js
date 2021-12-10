@@ -1,9 +1,6 @@
-const sequelize = require("./db/connection");
-const Product = require('./models/product');
-const User = require('./models/user');
-const Response = require('./models/response');
-const Solicitation = require('./models/solicitation');
-const Center = require('./models/center');
+const db = require("./models");
+const sequelize = db.sequelize;
+
 // Solicitation.hasOne(Product);
 // Product.belongsTo(Solicitation, {
 //     foreignKey: 'productId'
@@ -20,10 +17,6 @@ const Center = require('./models/center');
 // Response.hasOne(User);
 // User.belongsTo(Response);
 
-
 (async () => {
-
-    await sequelize.sync({ force: true })
-
-
+  await sequelize.sync();
 })();

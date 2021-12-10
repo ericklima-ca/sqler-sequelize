@@ -1,31 +1,34 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../db/connection');
-const User = require('./user');
+const { Model } = require("sequelize");
 
-class Center extends Model { };
-Center.init({
-    id: {
+module.exports = (sequelize, DataTypes) => {
+  class Center extends Model {
+    static associate(models) {}
+  }
+  Center.init(
+    {
+      id: {
         type: DataTypes.STRING,
         primaryKey: true,
-    },
-    storeName: {
+      },
+      storeName: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    warehouseEmail: {
+        allowNull: false,
+      },
+      warehouseEmail: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    managementEmail: {
+        allowNull: false,
+      },
+      managementEmail: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: "Center",
+      timestamps: false,
     }
-}, {
-    sequelize,
-    modelName: 'Center',
-    timestamps: false
-});
+  );
 
-
-
-module.exports = Center;
+  return Center;
+};

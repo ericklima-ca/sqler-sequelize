@@ -1,55 +1,57 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/connection');
-const Center = require('./center');
-const Product = require('./product');
-const User = require('./user');
+const { Model } = require("sequelize");
 
-class Solicitation extends Model { };
-Solicitation.init({
-    id: {
+module.exports = (sequelize, DataTypes) => {
+  class Solicitation extends Model {
+    static associate(models) {}
+  }
+  Solicitation.init(
+    {
+      id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
-    },
-    order: {
-        type: DataTypes.STRING
-    },
-    productId: {
+        primaryKey: true,
+      },
+      order: {
+        type: DataTypes.STRING,
+      },
+      productId: {
         type: DataTypes.STRING,
         references: {
-            key: 'id',
-            model: Product
-        }
-    },
-    amount: {
+          key: "id",
+          model: "Product",
+        },
+      },
+      amount: {
         type: DataTypes.INTEGER,
-        defaultValue: 1
-    },
-    centerId: {
+        defaultValue: 1,
+      },
+      centerId: {
         type: DataTypes.STRING,
         allowNull: false,
         references: {
-            model: Center,
-            key: 'id'
-        }
-    },
-    userId: {
+          model: "Center",
+          key: "id",
+        },
+      },
+      userId: {
         type: DataTypes.STRING,
         references: {
-            model: User,
-            key: 'id'
-        }
-    },
-    status: {
+          model: "User",
+          key: "id",
+        },
+      },
+      status: {
         type: DataTypes.STRING,
-        defaultValue: 'pending',
+        defaultValue: "pending",
         validate: {
-            isIn: [['pending', 'processing', 'finished']]
-        }
+          isIn: [["pending", "processing", "finished"]],
+        },
+      },
+      obs: {
+        type: DataTypes.TEXT,
+      },
     },
-    obs: {
-        type: DataTypes.TEXT
-    }
-}, { sequelize, modelName: 'Solicitation', timestamps: true })
-
-module.exports = Solicitation;
+    { sequelize, modelName: "Solicitation", timestamps: true }
+  );
+  return Solicitation;
+};

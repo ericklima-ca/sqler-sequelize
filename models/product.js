@@ -1,21 +1,26 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/connection');
+const { Model } = require("sequelize");
 
-class Product extends Model { }
-Product.init({
-    id: {
+module.exports = (sequelize, DataTypes) => {
+  class Product extends Model {
+    static associate(models) {}
+  }
+  Product.init(
+    {
+      id: {
         type: DataTypes.STRING,
         primaryKey: true,
-        unique: true
-    },
-    description: {
+        unique: true,
+      },
+      description: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+      },
+      ean: {
+        type: DataTypes.STRING,
+      },
+      imageUrl: DataTypes.STRING,
     },
-    ean: {
-        type: DataTypes.STRING
-    },
-    imageUrl: DataTypes.STRING
-}, { sequelize, modelName: 'Product', timestamps: false })
-
-module.exports = Product;
+    { sequelize, modelName: "Product", timestamps: false }
+  );
+  return Product;
+};
