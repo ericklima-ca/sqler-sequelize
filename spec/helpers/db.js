@@ -1,3 +1,3 @@
-process.env.NODE_ENV = "test"
+process.env.NODE_ENV = "test";
 
-global.db = require('../../models');
+global.db = require("../../models");

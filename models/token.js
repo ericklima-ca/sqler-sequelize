@@ -16,8 +16,13 @@ module.exports = (sequelize, DataTypes) => {
   Token.init(
     {
       id: {
-        type: DataTypes.TEXT,
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+      },
+      userToken: {
+        type: DataTypes.TEXT,
+        unique: true,
       },
     },
     {
@@ -25,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       hooks: {
         beforeCreate: (token) => {
-          const newToken = randomBytes(48).toString("hex");
-          token.id = newToken;
+          const newToken = randomBytes(24).toString("hex");
+          token.userToken = newToken;
         },
       },
     }
