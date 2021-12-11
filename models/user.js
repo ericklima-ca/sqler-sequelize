@@ -1,15 +1,25 @@
 const { Model } = require("sequelize");
+const bcrypt = require("bcryptjs");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {}
+    static associate(models) {
+      this.belongsTo(models.Center);
+      this.hasMany(models.Solicitation);
+      this.hasMany(models.Response);
+      this.hasMany(models.Token);
+    }
+    checkPassword = async (password) => {
+      return await bcrypt.compare(password, this.password);
+    };
   }
   User.init(
     {
       id: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        unique: true,
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
@@ -22,22 +32,17 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isEmail: true,
+        },
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      centerId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-          model: "Center",
-          key: "id",
-        },
-      },
       active: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        defaultValue: false,
       },
       office: {
         type: DataTypes.BOOLEAN,
@@ -49,6 +54,13 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "User",
       timestamps: false,
+      hooks: {
+        beforeCreate: async (user) => {
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(user.password, salt);
+          user.password = hashedPassword;
+        },
+      },
     }
   );
   return User;

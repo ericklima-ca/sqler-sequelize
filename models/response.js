@@ -1,24 +1,21 @@
 const { Model } = require("sequelize/dist");
+const { all } = require("sequelize/dist/lib/operators");
 
 module.exports = (sequelize, DataTypes) => {
   class Response extends Model {
-    static associate(models) {}
+    static associate(models) {
+      this.belongsTo(models.Solicitation);
+      this.belongsTo(models.User);
+    }
   }
   Response.init(
     {
-      solicitationId: {
+      id: {
         type: DataTypes.INTEGER,
-        references: {
-          model: "Solicitation",
-          key: "id",
-        },
-      },
-      userId: {
-        type: DataTypes.STRING,
-        references: {
-          model: "User",
-          key: "enroll",
-        },
+        primaryKey: true,
+        unique: true,
+        allowNull: false,
+        autoIncrement: true,
       },
       confirmed: {
         type: DataTypes.BOOLEAN,

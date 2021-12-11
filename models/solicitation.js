@@ -2,42 +2,32 @@ const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Solicitation extends Model {
-    static associate(models) {}
+    static associate(models) {
+      this.belongsTo(models.Product);
+      this.belongsTo(models.User, {
+        allowNull: false,
+      });
+      this.belongsTo(models.Center);
+      this.hasOne(models.Response);
+    }
   }
   Solicitation.init(
     {
       id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        unique: true,
+        allowNull: false,
+        autoIncrement: true,
       },
       order: {
         type: DataTypes.STRING,
       },
-      productId: {
-        type: DataTypes.STRING,
-        references: {
-          key: "id",
-          model: "Product",
-        },
-      },
       amount: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
-      },
-      centerId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-          model: "Center",
-          key: "id",
-        },
-      },
-      userId: {
-        type: DataTypes.STRING,
-        references: {
-          model: "User",
-          key: "id",
+        validate: {
+          isInt: true,
         },
       },
       status: {

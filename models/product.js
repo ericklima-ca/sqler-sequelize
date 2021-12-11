@@ -2,7 +2,9 @@ const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
-    static associate(models) {}
+    static associate(models) {
+      this.hasMany(models.Solicitation);
+    }
   }
   Product.init(
     {
@@ -10,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         primaryKey: true,
         unique: true,
+        allowNull: false,
       },
       description: {
         type: DataTypes.STRING,
