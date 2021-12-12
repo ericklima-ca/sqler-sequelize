@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       const expireDate = parsedTime + 1000 * 60 * 60;
       return Date.now() > expireDate;
     }
+
+    userConfirmed(token) {
+      return token === this.userToken;
+    }
   }
   Token.init(
     {
@@ -22,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       userToken: {
         type: DataTypes.TEXT,
-        unique: true,
       },
     },
     {

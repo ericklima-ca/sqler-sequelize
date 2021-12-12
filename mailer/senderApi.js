@@ -1,19 +1,18 @@
 const smtpConfig = require("./config");
+require("dotenv").config();
 
-const sendMailConfirmation = async (token) => {
+module.exports = async (token, req) => {
   const user = await token.getUser();
   try {
     await smtpConfig.sendMail({
-      from: '"Erick" email@email.com',
+      from: process.env.USER_GMAIL,
       to: user.email,
       subject: "Email confirmation",
       text: `Link for confirmation:
-          https://test.com/auth/verify/${user.id}/${token.userToken}`,
+          ${req.protocol}://${req.hostname}:${process.env.PORT}/auth/verify/${user.id}/${token.userToken}`,
     });
     console.log("Email send!");
   } catch (e) {
     console.log("Error", e);
   }
 };
-
-module.exports = sendMailConfirmation;

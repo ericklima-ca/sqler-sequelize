@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     checkPassword = async (password) => {
       return await bcrypt.compare(password, this.password);
     };
+    activeUser() {
+      this.active = true;
+      this.save();
+    }
   }
   User.init(
     {
@@ -43,11 +47,6 @@ module.exports = (sequelize, DataTypes) => {
       active: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-      },
-      office: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false,
       },
     },
     {
