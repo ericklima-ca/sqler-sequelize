@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const res = require("express/lib/response");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -20,67 +19,90 @@ router.use((req, res, next) => {
 });
 
 router.post("/login", async (req, res, _next) => {
-  console.log(req.body);
-  const { id, password } = req.body;
-  const user = await User.findOne({
-    where: {
-      id: id,
-    },
-  });
-  if (!user) {
-    return res.status(500).json({
-      message: "User not found",
+  try {
+    const { id, password } = req.body;
+    const user = await User.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!user) {
+      return res.status(500).json({
+        message: "User not found",
+      });
+    }
+    if (!user.active) {
+      return res.status(500).json({
+        message: "E-mail not confirmed. Please check out your e-mail",
+      });
+    }
+    if (!user.checkPassword(password)) {
+      return res.status(500).json({
+        message: "Password incorrect",
+      });
+    }
+    const token = jwt.sign({ ...user }, secret, {
+      expiresIn: "24h",
+    });
+    res.status(200).json({
+      token: token,
+      user: { ...user },
+    });
+  } catch (e) {
+    res.status(500).json({
+      error: e,
     });
   }
-  if (!user.checkPassword(password)) {
-    return res.status(500).json({
-      message: "Password incorrect",
-    });
-  }
-  const token = jwt.sign({ ...user }, secret, {
-    expiresIn: "24h",
-  });
-  res.status(200).json({
-    token: token,
-    user: { ...user },
-  });
 });
 
 router.post("/signup", async (req, res, _next) => {
-  const { id, name, lastName, CenterId, password, email } = req.body;
-  await User.sync({ force: true });
-  const user = await User.create({
-    id: id,
-    name: name,
-    email: email,
-    CenterId: CenterId,
-    lastName: lastName,
-    password: password,
-  });
-  if (user) {
-    const token = await Token.create({
-      UserId: id,
+  try {
+    const { id, name, lastName, CenterId, password, email } = req.body;
+    const user = await User.create({
+      id: id,
+      name: name,
+      email: email,
+      CenterId: CenterId,
+      lastName: lastName,
+      password: password,
     });
-    token.sendMailToken(req);
-    res.status(200).json({
-      user: { ...user },
+    if (user) {
+      const token = await Token.create({
+        UserId: id,
+      });
+      token.sendMailToken(req);
+      res.status(200).json({
+        user: { ...user },
+      });
+    }
+  } catch (e) {
+    res.status(500).json({
+      message: "unknown error",
     });
   }
 });
 
 router.get("/verify/:id/:token", checkToken, async (req, res, _next) => {
   const { id } = req.body;
-  const user = await User.findOne({
-    where: {
-      id: id,
-    },
-  });
-  user.activeUser();
-  res.status(200).json({
-    message: "E-mail confirmed",
-  });
+  try {
+    const user = await User.findOne({
+      where: {
+        id: id,
+      },
+    });
+    user.activeUser();
+    res.status(200).json({
+      message: "E-mail confirmed",
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: "error" + e,
+    });
+  }
 });
 
+// TODO: implement recovery password
+/*
 router.post("/recovery", async (req, res, _next) => {
   res.status(200).json({
     message:
@@ -111,5 +133,5 @@ router.get("/recovery/:id/:token", checkToken, async (req, res, next) => {
 });
 
 router.post("/recovery/:id/:token", async (req, res, next) => {});
-
+*/
 module.exports = router;

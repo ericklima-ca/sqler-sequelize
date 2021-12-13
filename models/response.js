@@ -1,5 +1,4 @@
 const { Model } = require("sequelize/dist");
-const { all } = require("sequelize/dist/lib/operators");
 
 module.exports = (sequelize, DataTypes) => {
   class Response extends Model {

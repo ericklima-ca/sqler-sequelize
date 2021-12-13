@@ -1,7 +1,7 @@
 const { Model } = require("sequelize");
 const { randomBytes } = require("crypto");
 
-const smtpConfig = require("../mailer/config");
+const smtpConfig = require("../services/mailer/config");
 require("dotenv").config();
 
 module.exports = (sequelize, DataTypes) => {

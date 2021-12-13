@@ -59,6 +59,11 @@ module.exports = (sequelize, DataTypes) => {
           const hashedPassword = await bcrypt.hash(user.password, salt);
           user.password = hashedPassword;
         },
+        beforeUpdate: async (user) => {
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(user.password, salt);
+          user.password = hashedPassword;
+        },
       },
     }
   );
