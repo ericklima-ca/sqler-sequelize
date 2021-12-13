@@ -8,10 +8,12 @@
     "storage": "./db/database-test.sqlite"
   },
   "production": {
-    "username": null,
-    "password": null,
-    "database": null,
-    "host": null,
-    "dialect": null
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "rejectUnauthorized": false
+      }
+    }
   }
 }

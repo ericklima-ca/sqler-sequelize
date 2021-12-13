@@ -1,3 +1,6 @@
+const request = require("supertest");
+const app = require("../../server/app/app");
+
 describe("test for all models", () => {
   let Solicitation = global.db.Solicitation;
   let Product = global.db.Product;
@@ -93,21 +96,34 @@ describe("test for all models", () => {
     expect(response).toBeTruthy();
   });
 
-  it("should create a new toke", async () => {
+  it("should create a new token", async () => {
     const token = await Token.create({
       token: "",
       UserId: 12345,
     });
 
-    function sleep(milliseconds) {
-      const date = Date.now();
-      let currentDate = null;
-      do {
-        currentDate = Date.now();
-      } while (currentDate - date < milliseconds);
-    }
+    // function sleep(milliseconds) {
+    //   const date = Date.now();
+    //   let currentDate = null;
+    //   do {
+    //     currentDate = Date.now();
+    //   } while (currentDate - date < milliseconds);
+    // }
     expect(token).toBeTruthy();
     expect(token.token).not.toBe("");
     expect(token.expired()).toBe(false);
+  });
+
+  it("POST /api/auth/login", async () => {
+    request(app)
+      .get("/api/auth/login")
+      .send({ id: "12345", password: "123123123" })
+      .expect("Content-Type", /json/)
+      .expect(200, {
+        token: null,
+      })
+      .end(function (err, _res) {
+        if (err) throw err;
+      });
   });
 });
