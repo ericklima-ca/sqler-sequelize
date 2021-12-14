@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         allowNull: false,
       },
-      storeName: {
+      centerName: {
         type: DataTypes.STRING,
         allowNull: false,
       },

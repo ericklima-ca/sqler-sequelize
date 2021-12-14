@@ -14,7 +14,7 @@ class SolicitationMailer {
     const user = await response.getUser();
     const to = `${user.email}, ${center.warehouseEmail}, ${center.managementEmail}`;
     const cc = `${process.env.LOG_EMAIL}, ${process.env.CS_EMAIL}`;
-    const centerName = center.storeName;
+    const centerName = center.centerName;
 
     await smtpConfig.sendMail({
       from: process.env.USER_GMAIL,

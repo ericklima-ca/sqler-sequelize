@@ -46,13 +46,13 @@ describe("test for all models", () => {
   it("should create a new center", async () => {
     const center102 = await Center.create({
       id: 102,
-      storeName: "Online",
+      centerName: "Online",
       warehouseEmail: "online@email.com",
       managementEmail: "management@email.com",
     });
 
     expect(center102.id).toBe(102);
-    expect(center102.storeName).toBe("Online");
+    expect(center102.centerName).toBe("Online");
     expect(center102.warehouseEmail).toBe("online@email.com");
     expect(center102.managementEmail).toBe("management@email.com");
   });
