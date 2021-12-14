@@ -1,17 +1,19 @@
 const { Solicitation, Response } = require("../../../models");
 const checkAuth = require("../../middleware/check-auth");
-const { Helper } = require("../helper");
+const Helper = require("../helper");
 
 const router = require("express").Router();
 
 router.use(checkAuth);
 router.use((req, res, next) => {
   const payload = Helper.getPayload(req);
-  const UserId = payload.UserId;
-  if (UserId != "102") {
+  const CenterId = payload.CenterId;
+  if (CenterId != 102) {
     next();
   } else {
-    res.redirect("/api/solicitations");
+    res.status(301).json({
+      message: "Not authorized",
+    });
   }
 });
 

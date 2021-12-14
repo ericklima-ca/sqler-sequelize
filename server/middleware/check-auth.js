@@ -1,12 +1,14 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    jwt.verify(token, process.env.SECRET);
+    jwt.verify(token, process.env.SECRET_JWT);
     next();
   } catch (_) {
-    res.redirect(301, "/api/auth/login");
+    res.status(301).json({
+      message: "Not authorized",
+    });
   }
 };

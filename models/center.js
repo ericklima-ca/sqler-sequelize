@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   Center.init(
     {
       id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         unique: true,
         allowNull: false,

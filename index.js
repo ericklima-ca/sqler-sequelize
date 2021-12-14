@@ -1,7 +1,6 @@
-const { sequelize } = require('./models');
+const { sequelize } = require("./models");
 const app = require("./server/app/app");
-require('dotenv').config();
-
+require("dotenv").config();
 
 app.listen(process.env.PORT, async () => {
   await sequelize.sync();

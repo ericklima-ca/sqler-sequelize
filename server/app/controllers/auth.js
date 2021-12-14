@@ -5,14 +5,14 @@ require("dotenv").config();
 const { User, Token } = require("../../../models");
 const checkToken = require("../../middleware/check-token");
 
-const secret = process.env.SECRET;
+const secret = process.env.SECRET_JWT;
 
 router.use((req, res, next) => {
   if (req.url === "/logout") {
     return next();
   }
   if (req.headers.authorization) {
-    res.redirect("/api/solicitations");
+    res.status(301);
     return;
   }
   next();
@@ -27,21 +27,23 @@ router.post("/login", async (req, res, _next) => {
       },
     });
     if (!user) {
-      return res.status(500).json({
+      return res.status(501).json({
         message: "User not found",
       });
     }
     if (!user.active) {
-      return res.status(500).json({
+      return res.status(502).json({
         message: "E-mail not confirmed. Please check out your e-mail",
       });
     }
-    if (!user.checkPassword(password)) {
-      return res.status(500).json({
+    const check = await user.checkPassword(password);
+    if (!check) {
+      return res.status(503).json({
         message: "Password incorrect",
       });
     }
-    const token = jwt.sign({ ...user }, secret, {
+
+    const token = jwt.sign(await { ...user.dataValues }, secret, {
       expiresIn: "24h",
     });
     res.status(200).json({
@@ -72,7 +74,7 @@ router.post("/signup", async (req, res, _next) => {
       });
       token.sendMailToken(req);
       res.status(200).json({
-        user: { ...user },
+        user: { ...user.dataValues },
       });
     }
   } catch (e) {

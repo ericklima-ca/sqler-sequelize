@@ -13,11 +13,13 @@ class SolicitationMailer {
     const center = await solicitation.getCenter();
     const user = await response.getUser();
     const to = `${user.email}, ${center.warehouseEmail}, ${center.managementEmail}`;
+    const cc = `${process.env.LOG_EMAIL}, ${process.env.CS_EMAIL}`;
     const centerName = center.storeName;
 
     await smtpConfig.sendMail({
       from: process.env.USER_GMAIL,
       to: to,
+      cc: cc,
       subject: `Send to Distribution Center | NF ${obs}`,
       text: `${obs} | Center: ${centerName}`,
     });

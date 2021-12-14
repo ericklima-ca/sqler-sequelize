@@ -1,10 +1,11 @@
 const router = require("express").Router();
 require("dotenv").config();
 
-const { Helper } = require("../helper");
+const Helper = require("../helper");
 const SolicitationMailer = require("../../../services/mailer/solicitation-mail");
 
-const { Solicitation } = require("../../../models");
+const { Solicitation, Product } = require("../../../models");
+const { Op } = require("sequelize");
 
 const checkAuth = require("../../middleware/check-auth");
 const checkPermission = require("../../middleware/check-permission");
@@ -15,28 +16,28 @@ router.get("/", async (req, res, _next) => {
   const payload = Helper.getPayload(req);
   const center = payload.CenterId;
   let solicitations;
-  let products = [];
 
   switch (center) {
-    case "102":
-      solicitations = await Solicitation.findAll();
+    case 102:
+      solicitations = await Solicitation.findAll({
+        where: {
+          status: "pending",
+        },
+        order: [["createdAt", "DESC"]],
+        include: Product,
+      });
       break;
     default:
       solicitations = await Solicitation.findAll({
         where: {
-          CenterId: center,
+          [Op.and]: [{ CenterId: center }, { status: "pending" }],
         },
+        order: [["createdAt", "DESC"]],
+        include: Product,
       });
   }
-
-  solicitations.map(async (solicitation) => {
-    const product = await solicitation.getProduct();
-    products.push(product);
-  });
-
   res.status(200).json({
     solicitations: solicitations,
-    products: products,
   });
 });
 

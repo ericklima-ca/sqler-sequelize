@@ -67,9 +67,14 @@ describe("test for all models", () => {
       email: "fulano@email.com",
     });
 
+    fulano.active = true;
+    fulano.save();
+
     expect(fulano.name).toBe("Fulano");
     expect(fulano.lastName).toBe("Fulanito");
     expect(fulano.CenterId).toBe(102);
+    expect(await fulano.checkPassword("123123123")).toBeTrue();
+    expect(!(await fulano.checkPassword("123123123"))).toBeFalse();
     expect(fulano.email).toBe("fulano@email.com");
     expect(fulano.password).not.toBe("123123123");
   });
@@ -114,16 +119,95 @@ describe("test for all models", () => {
     expect(token.expired()).toBe(false);
   });
 
-  it("POST /api/auth/login", async () => {
+  it("POST /api/auth/login get 501 for user not found", async () => {
     request(app)
-      .get("/api/auth/login")
-      .send({ id: "12345", password: "123123123" })
+      .post("/api/auth/login")
+      .send({ id: 12346, password: "123123123" })
       .expect("Content-Type", /json/)
-      .expect(200, {
-        token: null,
-      })
+      .expect(501)
       .end(function (err, _res) {
         if (err) throw err;
       });
+  });
+
+  it("POST /api/auth/login get 503 for incorrect password", async () => {
+    request(app)
+      .post("/api/auth/login")
+      .send({ id: 12345, password: "1" })
+      .expect("Content-Type", /json/)
+      .expect(503)
+      .end(function (err, _res) {
+        if (err) throw err;
+      });
+  });
+  var token;
+  it("POST /api/auth/login get 200 for successfull login", async (done) => {
+    await User.create({
+      id: 12346,
+      name: "Fulano",
+      lastName: "Fulanito",
+      CenterId: 102,
+      password: "123456",
+      email: "fulano@email.com",
+      active: true,
+    });
+    request(app)
+      .post("/api/auth/login")
+      .send({ id: 12346, password: "123456" })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end(function (err, res) {
+        if (err) throw err;
+        token = res.body.token;
+        done();
+      });
+  });
+
+  it("GET /api/solicitations get 200 for successfull req", async () => {
+    request(app)
+      .get("/api/solicitations")
+      .set("Authorization", "Bearer " + token)
+      .expect(200)
+      .expect("Content-Type", /json/)
+      .end(function (err, res) {
+        if (err) throw err;
+      });
+  });
+
+  it("PUT /api/responses get 301 for unauthorized req", async () => {
+    request(app)
+      .put("/api/responses/1/ntp")
+      .set("Authorization", "Bearer " + token)
+      .expect(301)
+      .expect("Content-Type", /json/)
+      .end(function (err, res) {
+        if (err) throw err;
+      });
+  });
+
+  it("POST /api/auth/signup get 200 for user successfull created", async () => {
+    request(app)
+      .post("/api/auth/signup")
+      .set("Content-Type", "application/json")
+      .send({
+        id: 12347,
+        name: "Fulanilson",
+        lastName: "Fulanélvis",
+        CenterId: 102,
+        password: "123123123",
+        email: "fulano@email.com",
+      })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end(function (err, _res) {
+        if (err) throw err;
+        return;
+      });
+    let user = await User.findOne({
+      where: {
+        id: 12347,
+      },
+    });
+    expect(user.active).toBeFalse();
   });
 });
