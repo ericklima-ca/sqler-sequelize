@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jasmine",
-    "start": "node index.js",
-    "start:dev": "node index.js"
+    "start": "node index.js"
   },
   "engines": {
     "node": "16.x"

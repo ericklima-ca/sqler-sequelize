@@ -41,6 +41,15 @@ router.get("/", async (req, res, _next) => {
   });
 });
 
+router.get("/new", checkPermission, async (_req, res, _next) => {
+  const products = await Product.findAll();
+  const centers = await Centers.findAll();
+  res.status(200).json({
+    products: products,
+    centers: centers,
+  });
+});
+
 router.post("/new", checkPermission, async (req, res, _next) => {
   const { UserId } = Helper.getPayload(req);
   const { ProductId, amount, CenterId, order } = req.body;

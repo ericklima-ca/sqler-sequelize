@@ -1,0 +1,1 @@
+web: npx sequelize db:seed:all && npm start
