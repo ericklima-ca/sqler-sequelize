@@ -19,53 +19,48 @@ router.use((req, res, next) => {
 });
 
 router.post("/login", async (req, res, _next) => {
+  const { id, password } = req.body;
+
   try {
-    const { id, password } = req.body;
     const user = await User.findOne({
       where: {
         id: id,
       },
     });
-    if (!user) {
-      return res.status(501).json({
-        message: "User not found",
-      });
-    }
+
     if (!user.active) {
-      return res.status(502).json({
+      return res.status(501).json({
         message: "E-mail not confirmed. Please check out your e-mail",
       });
     }
     const check = await user.checkPassword(password);
-    if (!check) {
-      return res.status(503).json({
-        message: "Password incorrect",
+    if (check) {
+      const token = jwt.sign(await { ...user.dataValues }, secret, {
+        expiresIn: "24h",
+      });
+      return res.status(200).json({
+        token: token,
       });
     }
-
-    const token = jwt.sign(await { ...user.dataValues }, secret, {
-      expiresIn: "24h",
-    });
-    res.status(200).json({
-      token: token,
-      user: { ...user },
+    return res.status(200).json({
+      message: "Enroll or password incorrect",
     });
   } catch (e) {
-    res.status(500).json({
-      error: e,
+    return res.status(200).json({
+      message: "Enroll or password incorrect",
     });
   }
 });
 
 router.post("/signup", async (req, res, _next) => {
+  console.log(req.body);
   try {
-    const { id, name, lastName, CenterId, password, email } = req.body;
+    const { id, name, CenterId, password, email } = req.body;
     const user = await User.create({
       id: id,
       name: name,
       email: email,
       CenterId: CenterId,
-      lastName: lastName,
       password: password,
     });
     if (user) {
@@ -78,14 +73,15 @@ router.post("/signup", async (req, res, _next) => {
       });
     }
   } catch (e) {
+    console.log(e);
     res.status(500).json({
-      message: "unknown error",
+      message: "unknown error" + e,
     });
   }
 });
 
 router.get("/verify/:id/:token", checkToken, async (req, res, _next) => {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const user = await User.findOne({
       where: {
@@ -93,9 +89,9 @@ router.get("/verify/:id/:token", checkToken, async (req, res, _next) => {
       },
     });
     user.activeUser();
-    res.status(200).json({
-      message: "E-mail confirmed",
-    });
+    res
+      .status(200)
+      .send("<p>Email confirmado! Feche a aba de entre novamente!</p>");
   } catch (e) {
     res.status(500).json({
       message: "error" + e,

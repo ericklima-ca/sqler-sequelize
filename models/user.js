@@ -29,10 +29,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      lastName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -55,11 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
       hooks: {
         beforeCreate: async (user) => {
-          const salt = await bcrypt.genSalt(10);
-          const hashedPassword = await bcrypt.hash(user.password, salt);
-          user.password = hashedPassword;
-        },
-        beforeUpdate: async (user) => {
           const salt = await bcrypt.genSalt(10);
           const hashedPassword = await bcrypt.hash(user.password, salt);
           user.password = hashedPassword;
