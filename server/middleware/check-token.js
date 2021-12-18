@@ -19,8 +19,8 @@ module.exports = async (req, res, next) => {
       });
     }
     if (!tokenBase || !tokenBase.checkUser(token)) {
-      return res.status(500).json({
-        error: "error",
+      return res.status(400).json({
+        error: "not authorized",
       });
     }
     next();

@@ -73,7 +73,7 @@ router.delete("/delete/:id", checkPermission, async (req, res, _next) => {
       id: id,
     },
   });
-  res.status(201).json({
+  res.status(202).json({
     message: "Solicitation deleted",
   });
 });
@@ -103,7 +103,7 @@ router.put("/edit/:id/:action", checkPermission, async (req, res, _next) => {
       await SolicitationMailer.sendMail(solicitation);
       break;
   }
-  res.status(200).json({
+  res.status(201).json({
     message: "Solicitation updated",
   });
 });

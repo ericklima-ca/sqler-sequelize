@@ -7,17 +7,6 @@ const checkToken = require("../../middleware/check-token");
 
 const secret = process.env.SECRET_JWT;
 
-router.use((req, res, next) => {
-  if (req.url === "/logout") {
-    return next();
-  }
-  if (req.headers.authorization) {
-    res.status(301);
-    return;
-  }
-  next();
-});
-
 router.post("/login", async (req, res, _next) => {
   const { id, password } = req.body;
 
@@ -29,7 +18,7 @@ router.post("/login", async (req, res, _next) => {
     });
 
     if (!user.active) {
-      return res.status(501).json({
+      return res.status(401).json({
         message: "E-mail not confirmed. Please check out your e-mail",
       });
     }
@@ -40,20 +29,20 @@ router.post("/login", async (req, res, _next) => {
       });
       return res.status(200).json({
         token: token,
+        user: { CenterId: user.CenterId, id: user.id },
       });
     }
-    return res.status(200).json({
+    return res.status(400).json({
       message: "Enroll or password incorrect",
     });
   } catch (e) {
-    return res.status(200).json({
+    return res.status(400).json({
       message: "Enroll or password incorrect",
     });
   }
 });
 
 router.post("/signup", async (req, res, _next) => {
-  console.log(req.body);
   try {
     const { id, name, CenterId, password, email } = req.body;
     const user = await User.create({
@@ -73,9 +62,8 @@ router.post("/signup", async (req, res, _next) => {
       });
     }
   } catch (e) {
-    console.log(e);
-    res.status(500).json({
-      message: "unknown error" + e,
+    res.status(400).json({
+      message: "Bad request: " + e,
     });
   }
 });
@@ -90,11 +78,11 @@ router.get("/verify/:id/:token", checkToken, async (req, res, _next) => {
     });
     user.activeUser();
     res
-      .status(200)
+      .status(202)
       .send("<p>Email confirmado! Feche a aba de entre novamente!</p>");
   } catch (e) {
     res.status(500).json({
-      message: "error" + e,
+      message: "Error: " + e,
     });
   }
 });

@@ -11,13 +11,13 @@ router.use((req, res, next) => {
   if (CenterId != 102) {
     next();
   } else {
-    res.status(301).json({
+    res.status(401).json({
       message: "Not authorized",
     });
   }
 });
 
-router.put("/:id/:response", async (req, res, _next) => {
+router.get("/:id/:response", async (req, res, _next) => {
   const { UserId } = Helper.getPayload(req);
   const { id, response } = req.params;
   let updates;
@@ -50,7 +50,7 @@ router.put("/:id/:response", async (req, res, _next) => {
       },
     }
   );
-  res.status(200).json({
+  res.status(201).json({
     message: "Solicitation updated",
   });
 });

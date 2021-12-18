@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     jwt.verify(token, process.env.SECRET_JWT);
     next();
   } catch (_) {
-    res.status(301).json({
+    res.status(401).json({
       message: "Not authorized",
     });
   }
