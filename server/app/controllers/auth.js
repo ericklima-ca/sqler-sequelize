@@ -25,7 +25,7 @@ router.post("/login", async (req, res, _next) => {
     const check = await user.checkPassword(password);
     if (check) {
       const token = jwt.sign(await { ...user.dataValues }, secret, {
-        expiresIn: "24h",
+        expiresIn: "30s",
       });
       return res.status(200).json({
         token: token,
@@ -58,12 +58,15 @@ router.post("/signup", async (req, res, _next) => {
       });
       token.sendMailToken(req);
       res.status(200).json({
-        user: { ...user.dataValues },
+        error: false,
+        message:
+          "If everything went correctly, check your email and click on the confirmation link.",
       });
     }
   } catch (e) {
     res.status(400).json({
-      message: "Bad request: " + e,
+      error: true,
+      message: "Bad request. Try again.",
     });
   }
 });

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jasmine",
-    "start": "node ./db/helper.js && sequelize db:seed:all && node index.js",
+    "start": "node ./db/init.js && sequelize db:seed:all && node index.js",
     "start:dev": "nodemon index.js"
   },
   "engines": {

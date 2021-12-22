@@ -15,13 +15,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       ean: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
-      imageUrl: DataTypes.STRING,
+      imageUrl: DataTypes.TEXT,
     },
     { sequelize, modelName: "Product", timestamps: false }
   );
