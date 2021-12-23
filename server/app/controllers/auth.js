@@ -19,24 +19,28 @@ router.post("/login", async (req, res, _next) => {
 
     if (!user.active) {
       return res.status(401).json({
+        ok: false,
         message: "E-mail not confirmed. Please check out your e-mail",
       });
     }
     const check = await user.checkPassword(password);
     if (check) {
       const token = jwt.sign(await { ...user.dataValues }, secret, {
-        expiresIn: "30s",
+        expiresIn: "15s",
       });
       return res.status(200).json({
+        ok: true,
         token: token,
         user: { CenterId: user.CenterId, id: user.id },
       });
     }
     return res.status(400).json({
+      ok: false,
       message: "Enroll or password incorrect",
     });
   } catch (e) {
     return res.status(400).json({
+      ok: false,
       message: "Enroll or password incorrect",
     });
   }
@@ -58,14 +62,14 @@ router.post("/signup", async (req, res, _next) => {
       });
       token.sendMailToken(req);
       res.status(200).json({
-        error: false,
+        ok: true,
         message:
           "If everything went correctly, check your email and click on the confirmation link.",
       });
     }
   } catch (e) {
     res.status(400).json({
-      error: true,
+      ok: false,
       message: "Bad request. Try again.",
     });
   }
@@ -85,6 +89,7 @@ router.get("/verify/:id/:token", checkToken, async (req, res, _next) => {
       .send("<p>Email confirmado! Feche a aba de entre novamente!</p>");
   } catch (e) {
     res.status(500).json({
+      ok: false,
       message: "Error: " + e,
     });
   }

@@ -4,7 +4,7 @@ require("dotenv").config();
 const Helper = require("../helper");
 const SolicitationMailer = require("../../../services/mailer/solicitation-mail");
 
-const { Solicitation, Product } = require("../../../models");
+const { Solicitation, Product, User, Center } = require("../../../models");
 const { Op } = require("sequelize");
 
 const checkAuth = require("../../middleware/check-auth");
@@ -24,7 +24,7 @@ router.get("/", async (req, res, _next) => {
           status: "pending",
         },
         order: [["createdAt", "DESC"]],
-        include: Product,
+        include: [Product, User, Center],
       });
       break;
     default:
@@ -33,10 +33,11 @@ router.get("/", async (req, res, _next) => {
           [Op.and]: [{ CenterId: center }, { status: "pending" }],
         },
         order: [["createdAt", "DESC"]],
-        include: Product,
+        include: [Product, User],
       });
   }
   res.status(200).json({
+    ok: true,
     solicitations: solicitations,
   });
 });
