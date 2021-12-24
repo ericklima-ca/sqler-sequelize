@@ -42,27 +42,43 @@ router.get("/", async (req, res, _next) => {
   });
 });
 
-router.get("/new", checkPermission, async (_req, res, _next) => {
-  const products = await Product.findAll();
-  const centers = await Centers.findAll();
+router.get("/new/:product", checkPermission, async (req, res, _next) => {
+  const product = await Product.findOne({
+    where: {
+      id: parseInt(req.params.product),
+    },
+  });
+  if (!product) {
+    return res.status(404).json({
+      ok: false,
+      message: "Product not found",
+    });
+  }
   res.status(200).json({
-    products: products,
-    centers: centers,
+    ok: true,
+    message: { product: product },
   });
 });
 
 router.post("/new", checkPermission, async (req, res, _next) => {
-  const { UserId } = Helper.getPayload(req);
+  const { id } = Helper.getPayload(req);
   const { ProductId, amount, CenterId, order } = req.body;
-  await Solicitation.create({
+  const solicitation = await Solicitation.create({
     ProductId: ProductId,
     amount: amount,
     CenterId: CenterId,
-    UserId: UserId,
+    UserId: id,
     order: order,
   });
+  if (!solicitation) {
+    return res.status(400).json({
+      ok: false,
+      message: "Solicitation not created",
+    });
+  }
 
   res.status(201).json({
+    ok: true,
     message: "Solicitation created",
   });
 });

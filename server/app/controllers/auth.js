@@ -26,7 +26,7 @@ router.post("/login", async (req, res, _next) => {
     const check = await user.checkPassword(password);
     if (check) {
       const token = jwt.sign(await { ...user.dataValues }, secret, {
-        expiresIn: "15s",
+        expiresIn: "8h",
       });
       return res.status(200).json({
         ok: true,

@@ -14,18 +14,21 @@ module.exports = async (req, res, next) => {
       });
       token.sendMailToken(req);
       return res.status(200).json({
+        ok: true,
         message:
           "Token expired! Please verify a new token in your e-mail for confirmation",
       });
     }
     if (!tokenBase || !tokenBase.checkUser(token)) {
       return res.status(400).json({
-        error: "not authorized",
+        ok: false,
+        message: "not authorized",
       });
     }
     next();
   } catch (e) {
     res.status(500).json({
+      ok: false,
       error: e,
     });
   }

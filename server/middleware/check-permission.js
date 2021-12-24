@@ -1,17 +1,18 @@
 const jwt = require("jsonwebtoken");
+const Helper = require("../app/helper");
 require("dotenv").config();
 
 module.exports = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const payload = jwt.verify(token, process.env.SECRET_JWT);
+    const payload = Helper.getPayload(req);
     if (!payload.CenterId == 102) {
-      throw new Error("not authorized");
+      throw new Error();
     }
     next();
   } catch (_) {
     res.status(401).json({
-      error: "not authorized",
+      ok: false,
+      message: "Not authorized",
     });
   }
 };

@@ -8,7 +8,8 @@ module.exports = (req, res, next) => {
     next();
   } catch (_) {
     res.status(401).json({
-      message: "Not authorized",
+      ok: false,
+      message: "Token expired",
     });
   }
 };

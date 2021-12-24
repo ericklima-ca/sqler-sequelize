@@ -18,7 +18,7 @@ router.use((req, res, next) => {
 });
 
 router.get("/:id/:response", async (req, res, _next) => {
-  const { UserId } = Helper.getPayload(req);
+  const userId = Helper.getPayload(req).id;
   const { id, response } = req.params;
   let updates;
   switch (response) {
@@ -37,7 +37,7 @@ router.get("/:id/:response", async (req, res, _next) => {
   }
   await Response.create({
     SolicitationId: id,
-    UserId: UserId,
+    UserId: userId,
     confirmed: updates.confirmed,
   });
   await Solicitation.update(
