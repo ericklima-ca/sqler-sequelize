@@ -74,55 +74,74 @@ router.post("/new", checkPermission, async (req, res, _next) => {
     return res.status(400).json({
       ok: false,
       message: "Solicitation not created",
+      solicitation: undefined,
     });
   }
 
   res.status(201).json({
     ok: true,
     message: "Solicitation created",
+    solicitation: solicitation,
   });
 });
 
 router.delete("/delete/:id", checkPermission, async (req, res, _next) => {
+  const UserId = Helper.getPayload(req).id;
   const { id } = req.params;
-  await Solicitation.destroy({
-    where: {
-      id: id,
-    },
-  });
-  res.status(202).json({
-    message: "Solicitation deleted",
-  });
+  try {
+    await Solicitation.destroy({
+      where: {
+        [Op.and]: [{ id: id }, { UserId: UserId }],
+      },
+    });
+    res.status(202).json({
+      ok: true,
+      message: "Solicitation deleted",
+    });
+  } catch (_) {
+    res.status(401).json({
+      ok: false,
+      message: "Not authorized",
+    });
+  }
 });
 
 router.put("/edit/:id/:action", checkPermission, async (req, res, _next) => {
   const { id, action } = req.params;
-  switch (action) {
-    case "edit":
-      const { amount } = req.body;
-      await Solicitation.update(
-        {
-          amount: amount,
-        },
-        {
-          where: {
-            id: id,
+  try {
+    switch (action) {
+      case "edit":
+        const { amount } = req.body;
+        await Solicitation.update(
+          {
+            amount: amount,
           },
-        }
-      );
-      break;
-    case "response":
-      const { obs } = req.body;
-      const solicitation = await Solicitation.update(
-        { status: "finished", obs: obs },
-        { where: { id: id } }
-      );
-      await SolicitationMailer.sendMail(solicitation);
-      break;
+          {
+            where: {
+              id: id,
+            },
+          }
+        );
+        break;
+      case "response":
+        const { obs } = req.body;
+        const solicitation = await Solicitation.update(
+          { status: "finished", obs: obs },
+          { where: { id: id } }
+        );
+        await SolicitationMailer.sendMail(solicitation);
+        break;
+    }
+    res.status(201).json({
+      ok: true,
+      message: "Solicitation updated",
+    });
+  } catch (_) {
+    res.status(401).json({
+      ok: false,
+      message: "Not authorized",
+    });
   }
-  res.status(201).json({
-    message: "Solicitation updated",
-  });
 });
 
 module.exports = router;
