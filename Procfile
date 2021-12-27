@@ -1,1 +1,1 @@
-web: node ./db/init.js && npx sequelize-cli --debug db:seed:all && npm start
+web: node ./db/init.js && npx sequelize-cli db:seed:all --debug && npm start
