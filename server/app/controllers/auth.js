@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+//require("dotenv").config();
 
 const { User, Token } = require("../../../models");
 const checkToken = require("../../middleware/check-token");
@@ -49,6 +49,10 @@ router.post("/login", async (req, res, _next) => {
 router.post("/signup", async (req, res, _next) => {
   try {
     const { id, name, CenterId, password, email } = req.body;
+    /// test email pattern
+    const patternEmail = new RegExp(`(@${process.env.PATTERN_EMAIL})$`, 'i')
+    if (!email.match(patternEmail)) { throw new Error()}
+    ///
     const user = await User.create({
       id: id,
       name: name,

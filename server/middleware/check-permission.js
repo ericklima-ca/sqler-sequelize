@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Helper = require("../app/helper");
-require("dotenv").config();
+//require("dotenv").config();
 
 module.exports = async (req, res, next) => {
   try {

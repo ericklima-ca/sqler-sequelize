@@ -1,5 +1,5 @@
 const smtpConfig = require("./config");
-require("dotenv").config();
+//require("dotenv").config();
 const { Response } = require("../../models");
 
 class SolicitationMailer {

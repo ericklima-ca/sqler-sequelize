@@ -1,5 +1,5 @@
 const router = require("express").Router();
-require("dotenv").config();
+//require("dotenv").config();
 
 const Helper = require("../helper");
 const SolicitationMailer = require("../../../services/mailer/solicitation-mail");
