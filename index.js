@@ -1,4 +1,3 @@
-const { sequelize } = require("./models");
 const app = require("./server/app/app");
 const http = require("http").Server(app);
 const socketIO = require("socket.io");
