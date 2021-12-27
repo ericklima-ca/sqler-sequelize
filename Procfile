@@ -1,1 +1,1 @@
-web: node ./db/init.js && npx sequelize db:seed:all && npm start
+web: node ./db/init.js && npx sequelize-cli db:seed:all && npm start
