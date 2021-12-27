@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     async sendMailToken(req) {
       const user = await this.getUser();
       let subject = "E-mail confirmation";
-      let link = `${req.protocol}://${req.hostname}:${process.env.PORT}/api/auth/verify/${user.id}/${this.userToken}`;
+      let link = `https://${req.hostname}/api/auth/verify/${user.id}/${this.userToken}`;
       if (req.baseUrl === "/recovery") {
         subject = "Recovery confirmation";
-        link = `${req.protocol}://${req.hostname}:${process.env.PORT}/api/auth/recovery/${user.id}/${this.userToken}`;
+        link = `https://${req.hostname}/api/auth/recovery/${user.id}/${this.userToken}`;
       }
       try {
         await smtpConfig.sendMail({
