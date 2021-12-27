@@ -8,7 +8,6 @@ const port = process.env.PORT || 3000;
 //require("dotenv").config();
 
 app.listen(port, async () => {
-  await sequelize.sync();
   console.log("listening on port " + port);
 });
 
