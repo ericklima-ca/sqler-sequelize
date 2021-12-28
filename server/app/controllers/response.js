@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { Solicitation, Response } = require("../../../models");
+const { Solicitation, Response, User } = require("../../../models");
 const checkAuth = require("../../middleware/check-auth");
 const Helper = require("../helper");
 
@@ -18,13 +18,14 @@ const block102 = (req, res, next) => {
   }
 };
 
-router.get("/", async (req, res, _next) => {
-  const responses = await Response.findAll();
+router.get("/", async (_req, res, _next) => {
+  const responses = await Response.findAll({
+    include: [Solicitation, User],
+  });
   res.status(200).json({
     ok: true,
     responses: responses,
   });
-  console.log(responses);
 });
 
 router.get("/:id/:response", block102, async (req, res, _next) => {
