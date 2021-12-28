@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { Solicitation, Response, User } = require("../../../models");
+const { Solicitation, Response, User, Product } = require("../../../models");
 const checkAuth = require("../../middleware/check-auth");
 const Helper = require("../helper");
 
@@ -20,7 +20,7 @@ const block102 = (req, res, next) => {
 
 router.get("/", async (_req, res, _next) => {
   const responses = await Response.findAll({
-    include: [Solicitation, User],
+    include: [{model: Solicitation, include: [Product]}, User],
   });
   res.status(200).json({
     ok: true,
