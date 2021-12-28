@@ -6,7 +6,7 @@ const solicitationController = require("./controllers/solicitation");
 const responseController = require("./controllers/response");
 
 const customCors = {
-  origin: "*",
+  origin: ["*", "http://localhost:3200"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,
