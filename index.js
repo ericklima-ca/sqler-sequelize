@@ -23,4 +23,8 @@ http.listen(port, async () => {
 io.on("connection", (client) => {
   console.log("client connected");
   client.on("disconnect", () => console.log("client disconnected"));
+
+  client.on("newSolicitation", (msg) => {
+    io.emit("newSolicitation", msg);
+  });
 });
