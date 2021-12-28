@@ -5,7 +5,14 @@ const authController = require("./controllers/auth");
 const solicitationController = require("./controllers/solicitation");
 const responseController = require("./controllers/response");
 
-app.use(cors());
+const customCors = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(customCors));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/api/auth", authController);
