@@ -32,7 +32,7 @@ router.get("/", async (req, res, _next) => {
         where: {
           [Op.and]: [{ CenterId: center }, { status: "pending" }],
         },
-        order: [["createdAt", "DESC"]],
+        order: [["createdAt", "ASC"]],
         include: [Product, User],
       });
   }
