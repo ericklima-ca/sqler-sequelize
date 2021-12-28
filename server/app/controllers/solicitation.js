@@ -23,7 +23,7 @@ router.get("/", async (req, res, _next) => {
         where: {
           status: "pending",
         },
-        order: [["createdAt", "DESC"]],
+        order: [["createdAt", "ASC"]],
         include: [Product, User, Center],
       });
       break;
