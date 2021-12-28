@@ -9,7 +9,6 @@ const secret = process.env.SECRET_JWT;
 
 router.post("/login", async (req, res, _next) => {
   const { id, password } = req.body;
-
   try {
     const user = await User.findOne({
       where: {
@@ -50,8 +49,10 @@ router.post("/signup", async (req, res, _next) => {
   try {
     const { id, name, CenterId, password, email } = req.body;
     /// test email pattern
-    const patternEmail = new RegExp(`(@${process.env.PATTERN_EMAIL})$`, 'i')
-    if (!email.match(patternEmail)) { throw new Error()}
+    const patternEmail = new RegExp(`(@${process.env.PATTERN_EMAIL})$`, "i");
+    if (!email.match(patternEmail)) {
+      throw new Error();
+    }
     ///
     const user = await User.create({
       id: id,

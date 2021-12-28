@@ -29,7 +29,8 @@ router.get("/", async (req, res, _next) => {
 
 router.get("/:id/:response", block102, async (req, res, _next) => {
   const payload = Helper.getPayload(req);
-  const { userId, CenterId } = payload;
+  const userId = payload.id;
+  const { CenterId } = payload;
   const { id, response } = req.params;
   let updates;
   switch (response) {
