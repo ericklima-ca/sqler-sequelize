@@ -31,8 +31,17 @@ class SolicitationMailer {
         from: process.env.USER_GMAIL,
         to: to,
         cc: cc,
-        subject: `Send to Distribution Center | NF ${obs}`,
-        text: `${obs} | Center: ${centerName}`,
+        subject: `NF ${obs} | Enviar ao CD Manaus`,
+        text: `
+        Prezados,
+
+        Por gentileza, enviar produto e NF ao CD.
+        NF: ${obs}
+        Centro: Loja ${centerName}.
+
+        Reservado com ${user.name}.
+
+        Desde já agradecemos.`,
       });
       console.log("Email sent");
     } catch (e) {
