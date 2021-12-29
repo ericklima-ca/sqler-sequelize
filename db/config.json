@@ -1,7 +1,8 @@
 {
   "development": {
     "use_env_variable": "DATABASE_URL",
-    "dialect": "postgres"
+    "dialect": "mysql",
+    "ssl": "Amazon RDS"
   },
   "test": {
     "dialect": "sqlite",
@@ -9,7 +10,7 @@
   },
   "production": {
     "use_env_variable": "DATABASE_URL",
-    "dialect": "postgres",
+    "dialect": "mysql",
     "dialectOptions": {
       "ssl": {
         "rejectUnauthorized": false
