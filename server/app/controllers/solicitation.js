@@ -125,11 +125,12 @@ router.put("/edit/:id/:action", checkPermission, async (req, res, _next) => {
         break;
       case "response":
         const { obs } = req.body;
-        const solicitation = await Solicitation.update(
+
+        await Solicitation.update(
           { status: "finished", obs: obs },
           { where: { id: id } }
         );
-        await SolicitationMailer.sendMail(solicitation);
+        await SolicitationMailer.sendMail(id);
         break;
     }
     res.status(201).json({
