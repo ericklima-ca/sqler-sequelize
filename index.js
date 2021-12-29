@@ -24,7 +24,11 @@ io.on("connection", (client) => {
   console.log("client connected");
   client.on("disconnect", () => console.log("client disconnected"));
 
-  client.on("newSolicitation", (msg) => {
-    io.emit("newSolicitation", msg);
+  client.on("newSolicitation", () => {
+    client.broadcast.emit("newSolicitation");
+  });
+
+  client.on("newResponse", () => {
+    client.broadcast.emit("newResponse");
   });
 });
