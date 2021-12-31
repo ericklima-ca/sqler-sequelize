@@ -1,8 +1,32 @@
-const smtpConfig = require("./config");
 //require("dotenv").config();
+const fs = require("fs").promises;
+
+const smtpConfig = require("./config");
 const { Response, Solicitation } = require("../../models");
 
 class SolicitationMailer {
+  static async genTemplate(obj) {
+    try {
+      let data = await fs.readFile(__dirname + "/template.html", "utf-8");
+      const mapping = {
+        "{{order}}": obj.order,
+        "{{centerName}}": obj.centerName.toUpperCase(),
+        "{{centerId}}": obj.centerId,
+        "{{responder}}": obj.responder,
+        "{{requester}}": obj.requester,
+        "{{nf}}": obj.nf,
+      };
+      const pattern =
+        /{{order}}|{{centerName}}|{{centerId}}|{{responder}}|{{requester}}|{{nf}}/gi;
+      let template = data.replace(pattern, (m) => {
+        return mapping[m];
+      });
+      return template;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   static async sendMail(id) {
     const solicitation = await Solicitation.findOne({
       where: {
@@ -14,34 +38,39 @@ class SolicitationMailer {
         SolicitationId: solicitation.id,
       },
     });
-    const obs = solicitation.obs;
-    console.log(">>>" + obs);
+    const obs = solicitation.obs.replace("/", "-");
     const center = await solicitation.getCenter();
-    console.log(">>>" + center);
-
     const user = await response.getUser();
-    console.log(">>>" + user);
-
     const to = `${user.email}, ${center.warehouseEmail}, ${center.managementEmail}`;
     const cc = `${process.env.LOG_EMAIL}, ${process.env.CS_EMAIL}`;
-    const centerName = center.centerName;
 
+    const objEmail = {
+      order: solicitation.order,
+      centerName: center.centerName,
+      centerId: center.id,
+      responder: user.name,
+      requester: (await solicitation.getUser()).name,
+      nf: obs,
+    };
     try {
+      const htmlEmail = await SolicitationMailer.genTemplate(objEmail);
       await smtpConfig.sendMail({
         from: process.env.USER_GMAIL,
         to: to,
         cc: cc,
         subject: `NF ${obs} | Enviar ao CD Manaus`,
-        text: `
-        Prezados,
+        html: htmlEmail,
+        //   text: `
+        //   Prezados,
 
-        Por gentileza, enviar produto e NF ao CD.
-        NF: ${obs}
-        Centro: Loja ${centerName}.
+        //   Por gentileza, enviar produto e NF ao CD.
+        //   NF: ${obs}
+        //   Centro: Loja ${centerName}.
 
-        Reservado com ${user.name}.
+        //   Reservado com ${user.name}.
 
-        Desde já agradecemos.`,
+        //   Desde já agradecemos.`,
+        // });
       });
       console.log("Email sent");
     } catch (e) {

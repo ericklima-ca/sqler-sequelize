@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .container {
+        font-family: Open Sans Condensed, sans-serif;
+        width: 600px;
+        margin: auto;
+      }
+      .top-info {
+        display: flex;
+      }
+      .text-info {
+        width: 100%;
+        text-align: right;
+      }
+      #footer-top-info-1 {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+      #footer-top-info-2 {
+        color: rgb(88, 160, 200);
+        font-weight: bold;
+      }
+
+      .bottom-container {
+        text-align: justify;
+        text-justify: inter-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top">
+        <div class="top top-info">
+          <div>
+            <img
+              src="https://ci3.googleusercontent.com/proxy/gmZNaSs9w13ckk4APaHzSGgBoKbMxU0FsUmMJsBcceIqD32QgfT_EGFgwxaA8kNIlPaYi3DvV3cg2856UMEEmJu_AibKqsKdct_TqMXL89A8eUNzTC6_NYo2Xxzl=s0-d-e1-ft#https://static.bemol.com.br/images/cab_email_relatorios/logo_relatorio.jpg"
+            />
+          </div>
+          <div class="top text-info">
+            <p id="footer-top-info-1">Faturamento de Solicitação</p>
+            <p id="footer-top-info-2">
+              Este e-mail foi enviado automaticamente
+            </p>
+          </div>
+        </div>
+        <div class="top footer-top">
+          <img
+            src="https://ci3.googleusercontent.com/proxy/7Ee7aaMhGlLbblsEue7QKojoQxFY5OHMJZ8YJuxNQHsx71uGua_xsntyZi0nzlpEaz-LddKS6oVW3rFZvVWcn9O5w4uJPOtqUYgxbVjwTpFweVgnHK3Alid5l-QqYqisAQ=s0-d-e1-ft#https://static.bemol.com.br/images/cab_email_relatorios/cordinha_relatorio.jpg"
+            width="600px"
+          />
+        </div>
+      </div>
+
+      <div class="bottom-container">
+        <h3>Senhores Almoxarifes,</h3>
+
+        <p>
+          Por gentileza, encaminhar o(s) produto(s) ao Centro de Distribuição
+          pelo caminhão de exposição da sua loja.
+        </p>
+
+        <p>
+          <b>Ordem</b>: {{order}}<br />
+          <b>Nota Fiscal</b>: {{nf}}<br />
+          <b>Faturado em</b>: {{centerId}} - LOJA {{centerName}}<br />
+          <b>Reservado com</b>: {{responder}}<br />
+          <b>Solicitado por</b>: {{requester}}
+        </p>
+        <br />
+        <p>Atenciosamente,</p>
+        <p><b>Bemol Online</b></p>
+      </div>
+    </div>
+  </body>
+</html>
