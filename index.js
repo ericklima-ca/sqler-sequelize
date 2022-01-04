@@ -31,4 +31,7 @@ io.on("connection", (client) => {
   client.on("newResponse", () => {
     client.broadcast.emit("newResponse");
   });
+  client.on("updateResponse", () => {
+    client.broadcast.emit("updateResponse");
+  });
 });
