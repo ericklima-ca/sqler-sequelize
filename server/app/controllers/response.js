@@ -24,9 +24,23 @@ const block102 = (req, res, next) => {
   }
 };
 
-router.get("/", async (_req, res, _next) => {
+router.get("/", async (req, res, _next) => {
+  const payload = Helper.getPayload(req);
+  let query;
+  if (payload.CenterId != 102) {
+    query = { CenterId: payload.CenterId };
+  } else {
+    query = {};
+  }
   const responses = await Response.findAll({
-    include: [{ model: Solicitation, include: [Product, Center] }, User],
+    include: [
+      {
+        model: Solicitation,
+        include: [Product, Center],
+        where: query,
+      },
+      User,
+    ],
   });
   res.status(200).json({
     ok: true,
